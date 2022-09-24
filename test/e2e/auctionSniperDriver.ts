@@ -12,7 +12,4 @@ export class AuctionSniperDriver {
       this.dom.window.document.querySelector("#sniper-status")?.textContent
     ).eql(statusText);
   }
-  public stop() {
-    this.dom.window.close();
-  }
 }

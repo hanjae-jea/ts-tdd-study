@@ -43,4 +43,9 @@ export class FakeAuctionServer {
   public announceClosed() {
     this.redisServer.publish(this.itemId, "SERVER:CLOSE;");
   }
+
+  public stop() {
+    this.redisServer.disconnect();
+    this.redisHost.disconnect();
+  }
 }

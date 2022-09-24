@@ -9,7 +9,12 @@ describe("auction sniper e2e test", () => {
     auction.startSellingItem();
     application.startBiddingIn(auction);
     await auction.hasReceivedJoinRequestFromSniper();
-    // auction.announceClosed();
-    // application.showsSniperHasLostAuction();
+    auction.announceClosed();
+    await application.showsSniperHasLostAuction();
+  });
+
+  after(() => {
+    auction.stop();
+    application.stop();
   });
 });

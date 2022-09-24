@@ -1,3 +1,4 @@
+import { expect } from "chai";
 import Redis from "ioredis";
 import { JSDOM } from "jsdom";
 
@@ -7,6 +8,7 @@ export class Main {
 
   private redisPublish;
   private redisSubscribe;
+  private sniperStatus: HTMLDivElement | null = null;
 
   constructor(dom: JSDOM) {
     this.dom = dom;
@@ -19,9 +21,20 @@ export class Main {
     this.itemId = itemId;
     this.redisPublish.publish(itemId, "hello");
 
-    const status = this.dom.window.document.createElement("div");
-    status.id = "sniper-status";
-    status.textContent = "joining";
-    this.dom.window.document.body.appendChild(status);
+    this.sniperStatus = this.dom.window.document.createElement("div");
+    this.sniperStatus.id = "sniper-status";
+    this.sniperStatus.textContent = "joining";
+    this.dom.window.document.body.appendChild(this.sniperStatus);
+
+    this.redisSubscribe.subscribe(itemId, () => {});
+    this.redisSubscribe.on("message", (channel, message) => {
+      this.sniperStatus && (this.sniperStatus.textContent = "lost");
+    });
+  }
+
+  public stop() {
+    this.dom.window.close();
+    this.redisPublish.disconnect();
+    this.redisSubscribe.disconnect();
   }
 }

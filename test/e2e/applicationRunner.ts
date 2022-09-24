@@ -17,10 +17,12 @@ export class ApplicationRunner {
 
     // this.driver.showsSniperStatus("joining");
   }
-  public showsSniperHasLostAuction() {
+  public async showsSniperHasLostAuction() {
+    const wait = () => new Promise((resolve) => setTimeout(resolve, 500));
+    await wait();
     this.driver.showsSniperStatus("lost");
   }
   public stop() {
-    this.driver.stop();
+    this.main.stop();
   }
 }
