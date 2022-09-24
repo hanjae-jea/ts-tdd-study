@@ -15,12 +15,18 @@ export class ApplicationRunner {
   public startBiddingIn(auction: FakeAuctionServer) {
     this.main.joinAuction(auction.getItemId());
 
-    // this.driver.showsSniperStatus("joining");
+    this.driver.showsSniperStatus("joining");
   }
   public async showsSniperHasLostAuction() {
-    const wait = () => new Promise((resolve) => setTimeout(resolve, 500));
+    const wait = () => new Promise((resolve) => setTimeout(resolve, 100));
     await wait();
     this.driver.showsSniperStatus("lost");
+  }
+
+  public async hasShownSniperIsBidding() {
+    const wait = () => new Promise((resolve) => setTimeout(resolve, 100));
+    await wait();
+    this.driver.showsSniperStatus("bidding");
   }
   public stop() {
     this.main.stop();

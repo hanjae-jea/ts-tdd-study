@@ -14,6 +14,13 @@ export class FakeAuctionServer {
     this.redisHost = new Redis("127.0.0.1:6379"); // subscribe 용
   }
 
+  public announcePrice(price: number, increment: number, bidder: string) {
+    this.redisServer.publish(
+      this.itemId,
+      `SERVER:PRICE;price:${price};increment:${increment};bidder:${bidder}`
+    );
+  }
+
   public getItemId() {
     return this.itemId;
   }
@@ -28,8 +35,8 @@ export class FakeAuctionServer {
   }
 
   private async poll(retry: number) {
-    const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
-    for (let i = 0; i < retry; i++) {
+    const wait = () => new Promise((resolve) => setTimeout(resolve, 100));
+    for (let i = 0; i < retry * 10; i++) {
       await wait(); // 1초 기다리기.
       if (this.messageQueue.length) return this.messageQueue.pop();
     }
@@ -38,6 +45,12 @@ export class FakeAuctionServer {
 
   public async hasReceivedJoinRequestFromSniper() {
     expect(await this.poll(5)).not.null;
+  }
+
+  public async hasReceivedBid(price: number, bidder: string) {
+    expect(await this.poll(5)).equal(
+      `AUCTION:BID;PRICE:${price};BIDDER:${bidder}`
+    );
   }
 
   public announceClosed() {
