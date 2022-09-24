@@ -5,13 +5,17 @@ import { Main } from "../../src/sniper/main";
 
 export class ApplicationRunner {
   private driver;
+  private main;
+
   constructor() {
     const dom = new JSDOM();
     this.driver = new AuctionSniperDriver(dom);
-    const main = new Main(dom);
+    this.main = new Main(dom);
   }
   public startBiddingIn(auction: FakeAuctionServer) {
-    this.driver.showsSniperStatus("joining");
+    this.main.joinAuction(auction.getItemId());
+
+    // this.driver.showsSniperStatus("joining");
   }
   public showsSniperHasLostAuction() {
     this.driver.showsSniperStatus("lost");
